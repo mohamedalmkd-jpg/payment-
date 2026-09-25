@@ -14,6 +14,7 @@ const expiryPreview = document.querySelector("#cardExpiryPreview");
 const cvvPreview = document.querySelector("#cardCvvPreview");
 const brandPreview = document.querySelector("#cardBrand");
 
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const onlyDigits = value => value.replace(/\D/g, "");
 
 function formatCardNumber(value) {
@@ -49,11 +50,13 @@ numberInput.addEventListener("input", event => {
 
 expiryInput.addEventListener("input", event => {
   let value = formatExpiry(event.target.value);
+
   if (value.length >= 2) {
-    let month = Number(value.slice(0, 2));
+    const month = Number(value.slice(0, 2));
     if (month > 12) value = "12" + value.slice(2);
     if (month === 0 && value.length >= 2) value = "01" + value.slice(2);
   }
+
   event.target.value = value;
   syncPreview();
 });
@@ -65,29 +68,97 @@ cvvInput.addEventListener("input", event => {
 
 nameInput.addEventListener("input", syncPreview);
 
-cvvInput.addEventListener("focus", () => cardStage.classList.add("cvv-focus"));
-cvvInput.addEventListener("blur", () => cardStage.classList.remove("cvv-focus"));
+/* Reference-video interaction:
+   CVV focus rotates the card to its back, other fields bring it to the front. */
+cvvInput.addEventListener("focus", () => {
+  card.style.transform = "";
+  cardStage.classList.add("cvv-focus");
+});
 
-function tiltCard(clientX, clientY) {
-  if (cardStage.classList.contains("cvv-focus")) return;
-  const rect = cardStage.getBoundingClientRect();
-  const x = (clientX - rect.left) / rect.width - 0.5;
-  const y = (clientY - rect.top) / rect.height - 0.5;
-  const rotateY = x * 13;
-  const rotateX = -y * 10;
-  card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+cvvInput.addEventListener("blur", () => {
+  cardStage.classList.remove("cvv-focus");
+});
+
+[nameInput, numberInput, expiryInput].forEach(input => {
+  input.addEventListener("focus", () => {
+    cardStage.classList.remove("cvv-focus");
+  });
+});
+
+/* Smooth 3D tracking uses one requestAnimationFrame per paint instead of
+   writing styles directly on every pointer event. */
+let targetX = 0;
+let targetY = 0;
+let currentX = 0;
+let currentY = 0;
+let rafId = 0;
+let tracking = false;
+
+function renderTilt() {
+  if (!tracking || cardStage.classList.contains("cvv-focus") || reduceMotion) {
+    rafId = 0;
+    return;
+  }
+
+  currentX += (targetX - currentX) * 0.16;
+  currentY += (targetY - currentY) * 0.16;
+
+  const rotateY = currentX * 9;
+  const rotateX = -currentY * 7;
+  const lift = 4 - Math.min(4, Math.abs(currentX) + Math.abs(currentY));
+
+  card.style.transform =
+    `translate3d(0,${-Math.max(0, lift)}px,0) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+
+  if (Math.abs(targetX - currentX) > 0.002 || Math.abs(targetY - currentY) > 0.002) {
+    rafId = requestAnimationFrame(renderTilt);
+  } else {
+    rafId = 0;
+  }
 }
 
-cardStage.addEventListener("pointermove", event => tiltCard(event.clientX, event.clientY));
-cardStage.addEventListener("pointerleave", () => {
-  if (!cardStage.classList.contains("cvv-focus")) card.style.transform = "";
+function requestTiltFrame() {
+  if (!rafId) rafId = requestAnimationFrame(renderTilt);
+}
+
+cardStage.addEventListener("pointerenter", () => {
+  if (reduceMotion) return;
+  tracking = true;
+  requestTiltFrame();
 });
-cardStage.addEventListener("pointerup", () => {
-  if (!cardStage.classList.contains("cvv-focus")) card.style.transform = "";
+
+cardStage.addEventListener("pointermove", event => {
+  if (reduceMotion || cardStage.classList.contains("cvv-focus")) return;
+
+  const rect = cardStage.getBoundingClientRect();
+  targetX = Math.max(-0.5, Math.min(0.5, (event.clientX - rect.left) / rect.width - 0.5));
+  targetY = Math.max(-0.5, Math.min(0.5, (event.clientY - rect.top) / rect.height - 0.5));
+
+  tracking = true;
+  requestTiltFrame();
 });
+
+function resetCardTilt() {
+  if (cardStage.classList.contains("cvv-focus")) return;
+
+  targetX = 0;
+  targetY = 0;
+  currentX = 0;
+  currentY = 0;
+  tracking = false;
+
+  if (rafId) cancelAnimationFrame(rafId);
+  rafId = 0;
+  card.style.transform = "";
+}
+
+cardStage.addEventListener("pointerleave", resetCardTilt);
+cardStage.addEventListener("pointerup", resetCardTilt);
+cardStage.addEventListener("pointercancel", resetCardTilt);
 
 function setInvalid(input, invalid) {
   input.classList.toggle("invalid", invalid);
+  input.setAttribute("aria-invalid", invalid ? "true" : "false");
 }
 
 function validate() {
@@ -97,6 +168,7 @@ function validate() {
   const year = Number(yearText);
   const now = new Date();
   const currentYY = now.getFullYear() % 100;
+
   const expiryOk =
     /^\d{2}\/\d{2}$/.test(expiryInput.value) &&
     month >= 1 &&
@@ -125,6 +197,9 @@ form.addEventListener("submit", event => {
   if (!validate()) {
     status.textContent = "Please check the highlighted fields.";
     status.classList.add("error");
+
+    const firstInvalid = form.querySelector(".invalid");
+    if (firstInvalid) firstInvalid.focus();
     return;
   }
 
@@ -139,7 +214,7 @@ form.addEventListener("submit", event => {
     payButton.querySelector(".pay-copy").textContent = "Pay $1,248.00";
     status.textContent = "Demo complete — ready to connect to a real payment provider later.";
     status.classList.add("success");
-  }, 1200);
+  }, 1100);
 });
 
 syncPreview();
