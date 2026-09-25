@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#f7f8fb" />
+  <meta name="description" content="Payments — premium animated checkout demo" />
+  <title>Payments — Secure Checkout</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <main class="page-shell">
+    <header class="checkout-header" aria-label="Checkout progress">
+      <a class="brand" href="#" aria-label="Payments home">
+        <span class="brand-mark" aria-hidden="true">P</span>
+        <span>PAYMENTS</span>
+      </a>
+
+      <div class="progress" aria-label="Checkout steps">
+        <span class="step done"><i></i>Your bag</span>
+        <span class="line"></span>
+        <span class="step done"><i></i>Delivery</span>
+        <span class="line"></span>
+        <span class="step active"><i></i>Payment</span>
+      </div>
+
+      <button class="icon-button" type="button" aria-label="More options">•••</button>
+    </header>
+
+    <section class="checkout-grid">
+      <aside class="summary-panel">
+        <div class="card-stage" id="cardStage" aria-label="Animated payment card preview">
+          <div class="payment-card" id="paymentCard">
+            <div class="card-face card-front">
+              <div class="card-topline">
+                <span class="chip" aria-hidden="true"></span>
+                <span class="tap" aria-hidden="true">)))</span>
+                <span class="card-logo">PAY</span>
+              </div>
+              <p class="card-number" id="cardNumberPreview">4242 4242 4242 4242</p>
+              <div class="card-bottom">
+                <div>
+                  <span class="card-label">CARD HOLDER</span>
+                  <strong id="cardNamePreview">A. HASIB</strong>
+                </div>
+                <div class="expiry-box">
+                  <span class="card-label">EXPIRES</span>
+                  <strong id="cardExpiryPreview">12/28</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-face card-back">
+              <div class="mag-strip"></div>
+              <div class="signature-row">
+                <span>AUTHORIZED SIGNATURE</span>
+                <strong id="cardCvvPreview">123</strong>
+              </div>
+              <p class="back-copy">This card preview is for interface demonstration only.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="order-card">
+          <div class="order-head">
+            <div>
+              <span class="eyebrow">YOUR ORDER</span>
+              <h2>Premium checkout</h2>
+            </div>
+            <strong>$1,248.00</strong>
+          </div>
+
+          <div class="order-lines">
+            <div><span>Priority delivery</span><strong>Included</strong></div>
+            <div><span>Estimated tax</span><strong>$48.00</strong></div>
+          </div>
+
+          <div class="order-total">
+            <span>Total due today</span>
+            <strong>$1,248.00</strong>
+          </div>
+        </div>
+
+        <p class="demo-note">Demo interface — card data stays in this browser and is never sent or stored.</p>
+      </aside>
+
+      <section class="payment-panel">
+        <div class="heading">
+          <span class="eyebrow">PAYMENT METHOD</span>
+          <h1>Payment details</h1>
+          <p>Enter your card details to preview the checkout animation.</p>
+        </div>
+
+        <form id="paymentForm" novalidate>
+          <label class="field">
+            <span>Cardholder name</span>
+            <input id="cardName" name="cardName" autocomplete="cc-name" maxlength="28" placeholder="A. HASIB" value="A. HASIB" />
+          </label>
+
+          <label class="field">
+            <span>Card number</span>
+            <div class="input-with-badge">
+              <input id="cardNumber" name="cardNumber" inputmode="numeric" autocomplete="cc-number" maxlength="19" placeholder="4242 4242 4242 4242" value="4242 4242 4242 4242" />
+              <b id="cardBrand">VISA</b>
+            </div>
+          </label>
+
+          <div class="field-row">
+            <label class="field">
+              <span>Expiry date</span>
+              <input id="cardExpiry" name="cardExpiry" inputmode="numeric" autocomplete="cc-exp" maxlength="5" placeholder="MM/YY" value="12/28" />
+            </label>
+            <label class="field">
+              <span>CVV</span>
+              <input id="cardCvv" name="cardCvv" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="123" value="123" />
+            </label>
+          </div>
+
+          <label class="save-card">
+            <input id="saveCard" type="checkbox" checked />
+            <span class="check-ui"></span>
+            <span>
+              <strong>Save this card for next time</strong>
+              <small>Stored payment methods should be handled by a PCI-compliant payment provider.</small>
+            </span>
+          </label>
+
+          <button class="pay-button" id="payButton" type="submit">
+            <span class="lock" aria-hidden="true">⌁</span>
+            <span class="pay-copy">Pay $1,248.00</span>
+            <span class="pay-arrow" aria-hidden="true">→</span>
+          </button>
+
+          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+
+          <div class="security-row" aria-label="Checkout security notes">
+            <span>🔒 TLS secured</span>
+            <span>◈ Token-ready</span>
+            <span>✓ No demo data stored</span>
+          </div>
+        </form>
+      </section>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
