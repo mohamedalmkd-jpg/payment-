@@ -319,8 +319,11 @@ resetDemo.addEventListener("click", () => {
   status.textContent = "";
   successCardSlot.innerHTML = "";
 
-  if (window.innerWidth <= 760 && checkoutGrid) {
-    checkoutGrid.scrollTo({ left: checkoutGrid.clientWidth, behavior: reduceMotion ? "auto" : "smooth" });
+  if (window.innerWidth <= 760) {
+    document.querySelector(".payment-panel")?.scrollIntoView({
+      behavior: reduceMotion ? "auto" : "smooth",
+      block: "start"
+    });
   }
 });
 
