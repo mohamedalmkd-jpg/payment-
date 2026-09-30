@@ -847,3 +847,332 @@ form{
 
   .security-row{gap:9px}
 }
+
+
+/* --- Interactive showcase keyboard ------------------------------------- */
+.field input[readonly]{
+  cursor:pointer;
+  caret-color:transparent;
+  user-select:none;
+}
+
+.demo-keyboard{
+  position:fixed;
+  right:24px;
+  bottom:24px;
+  z-index:80;
+  width:min(520px,calc(100vw - 48px));
+  padding:12px;
+  border:1px solid rgba(255,255,255,.78);
+  border-radius:24px;
+  background:rgba(232,235,241,.88);
+  box-shadow:0 28px 80px rgba(18,28,54,.26),inset 0 1px 0 rgba(255,255,255,.85);
+  backdrop-filter:blur(28px) saturate(1.25);
+  -webkit-backdrop-filter:blur(28px) saturate(1.25);
+  transform:translate3d(0,32px,0) scale(.965);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:
+    transform .42s cubic-bezier(.2,.82,.2,1),
+    opacity .28s ease,
+    visibility .28s step-end;
+}
+
+.demo-keyboard.visible{
+  transform:translate3d(0,0,0) scale(1);
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transition:
+    transform .42s cubic-bezier(.2,.82,.2,1),
+    opacity .28s ease,
+    visibility 0s;
+}
+
+.keyboard-bar{
+  min-height:34px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:0 4px 9px;
+  color:#596375;
+  font-size:.7rem;
+  font-weight:800;
+  letter-spacing:.04em;
+}
+
+.keyboard-bar button{
+  border:0;
+  padding:7px 11px;
+  border-radius:10px;
+  background:#fff;
+  color:var(--blue);
+  font-size:.68rem;
+  font-weight:800;
+  box-shadow:0 4px 12px rgba(24,34,60,.08);
+}
+
+.keyboard-keys{
+  display:grid;
+  grid-template-columns:repeat(10,minmax(0,1fr));
+  gap:6px;
+}
+
+.key{
+  min-width:0;
+  min-height:42px;
+  border:0;
+  border-radius:9px;
+  color:#1e2530;
+  background:linear-gradient(180deg,#fff,#f7f8fb);
+  box-shadow:0 1px 0 rgba(255,255,255,.95),0 2px 5px rgba(22,31,49,.16);
+  font-size:.82rem;
+  font-weight:700;
+  transition:transform .09s ease,box-shadow .09s ease,background .09s ease;
+  -webkit-tap-highlight-color:transparent;
+}
+
+.key:active{
+  transform:translateY(2px) scale(.97);
+  box-shadow:0 1px 2px rgba(22,31,49,.12);
+  background:#eef1f6;
+}
+
+.key.numeric{
+  grid-column:span 3;
+  min-height:48px;
+  font-size:1rem;
+}
+
+.key.action{
+  background:#d7dbe3;
+  color:#3c4656;
+}
+
+.key.space{
+  grid-column:span 6;
+}
+
+.key.wide{
+  grid-column:span 4;
+}
+
+body.keyboard-open .payment-panel{
+  padding-bottom:260px;
+}
+
+/* --- Cinematic fake-payment success scene ------------------------------ */
+.success-scene{
+  position:fixed;
+  inset:0;
+  z-index:140;
+  display:grid;
+  place-items:center;
+  align-content:center;
+  gap:24px;
+  padding:28px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 36%,rgba(59,225,146,.22),transparent 23rem),
+    radial-gradient(circle at 50% 75%,rgba(73,112,255,.16),transparent 32rem),
+    rgba(245,248,252,.78);
+  backdrop-filter:blur(26px) saturate(1.15);
+  -webkit-backdrop-filter:blur(26px) saturate(1.15);
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  transition:opacity .45s ease,visibility .45s step-end;
+}
+
+.success-scene::before,
+.success-scene::after{
+  content:"";
+  position:absolute;
+  border-radius:50%;
+  border:1px solid rgba(31,181,108,.17);
+  opacity:0;
+}
+
+.success-scene::before{
+  width:440px;
+  height:440px;
+}
+
+.success-scene::after{
+  width:620px;
+  height:620px;
+}
+
+.success-scene.show{
+  opacity:1;
+  visibility:visible;
+  pointer-events:auto;
+  transition:opacity .45s ease,visibility 0s;
+}
+
+.success-scene.show::before{animation:successRing 1.7s .35s ease-out both}
+.success-scene.show::after{animation:successRing 1.9s .52s ease-out both}
+
+@keyframes successRing{
+  from{opacity:.42;transform:scale(.62)}
+  to{opacity:0;transform:scale(1.15)}
+}
+
+.success-card-slot{
+  width:min(360px,82vw);
+  aspect-ratio:1.58/1;
+  perspective:1600px;
+  position:relative;
+  z-index:2;
+}
+
+.success-card-clone{
+  width:100%!important;
+  height:100%!important;
+  position:relative!important;
+  transition:none!important;
+  animation:cardVictory 1.45s cubic-bezier(.16,.84,.18,1) both!important;
+}
+
+.success-card-clone .card-front::before{
+  animation:sheen 2.2s .35s ease-in-out both;
+}
+
+@keyframes cardVictory{
+  0%{
+    opacity:0;
+    transform:translate3d(0,95px,-240px) rotateX(28deg) rotateY(-130deg) scale(.48);
+    filter:blur(8px);
+  }
+  46%{
+    opacity:1;
+    transform:translate3d(0,-24px,70px) rotateX(-10deg) rotateY(390deg) scale(1.07);
+    filter:blur(0);
+  }
+  73%{
+    transform:translate3d(0,8px,10px) rotateX(5deg) rotateY(650deg) scale(.94);
+  }
+  100%{
+    opacity:1;
+    transform:translate3d(0,0,0) rotateX(0) rotateY(720deg) scale(.88);
+  }
+}
+
+.success-copy{
+  position:relative;
+  z-index:3;
+  text-align:center;
+  opacity:0;
+  transform:translateY(16px);
+}
+
+.success-scene.show .success-copy{
+  animation:successCopyIn .62s 1s var(--ease) both;
+}
+
+@keyframes successCopyIn{
+  to{opacity:1;transform:none}
+}
+
+.success-check{
+  width:64px;
+  height:64px;
+  margin:0 auto 14px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  color:#fff;
+  background:linear-gradient(145deg,#29ce7e,#11a65f);
+  box-shadow:0 18px 42px rgba(31,181,108,.34),0 0 0 10px rgba(31,181,108,.09);
+  font-size:2rem;
+  font-weight:900;
+  transform:scale(.2) rotate(-25deg);
+}
+
+.success-scene.show .success-check{
+  animation:checkPop .58s 1.06s cubic-bezier(.16,1.4,.3,1) both;
+}
+
+@keyframes checkPop{
+  65%{transform:scale(1.12) rotate(4deg)}
+  100%{transform:scale(1) rotate(0)}
+}
+
+.success-kicker{
+  display:block;
+  color:#149458;
+  font-size:.62rem;
+  letter-spacing:.18em;
+  font-weight:900;
+}
+
+.success-copy h2{
+  margin:7px 0 6px;
+  font-size:clamp(1.8rem,5vw,2.7rem);
+  letter-spacing:-.045em;
+}
+
+.success-copy p{
+  margin:0 auto;
+  color:#768195;
+  font-size:.78rem;
+}
+
+.reset-demo{
+  margin-top:18px;
+  min-width:126px;
+  min-height:44px;
+  border:1px solid rgba(26,39,67,.09);
+  border-radius:13px;
+  background:#fff;
+  color:#1b2433;
+  font-weight:800;
+  box-shadow:0 12px 30px rgba(24,34,59,.10);
+}
+
+.pay-button.success{
+  background:linear-gradient(135deg,#28c878,#11a65f);
+  box-shadow:0 15px 36px rgba(31,181,108,.30);
+}
+
+body.success-active{
+  overflow:hidden;
+}
+
+@media (max-width:760px){
+  .demo-keyboard{
+    left:8px;
+    right:8px;
+    bottom:calc(8px + env(safe-area-inset-bottom));
+    width:auto;
+    border-radius:22px;
+    padding:9px;
+  }
+
+  .keyboard-keys{gap:5px}
+
+  .key{
+    min-height:40px;
+    font-size:.78rem;
+  }
+
+  .key.numeric{
+    min-height:46px;
+    font-size:1.02rem;
+  }
+
+  body.keyboard-open .payment-panel{
+    padding-bottom:330px;
+  }
+
+  .success-scene{
+    gap:16px;
+    padding:22px 18px calc(24px + env(safe-area-inset-bottom));
+  }
+
+  .success-card-slot{
+    width:min(330px,86vw);
+  }
+}
