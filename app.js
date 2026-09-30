@@ -1,4 +1,5 @@
 const form = document.querySelector("#paymentForm");
+const checkoutGrid = document.querySelector(".checkout-grid");
 const cardStage = document.querySelector("#cardStage");
 const card = document.querySelector("#paymentCard");
 const nameInput = document.querySelector("#cardName");
@@ -14,8 +15,20 @@ const expiryPreview = document.querySelector("#cardExpiryPreview");
 const cvvPreview = document.querySelector("#cardCvvPreview");
 const brandPreview = document.querySelector("#cardBrand");
 
+const keyboard = document.querySelector("#demoKeyboard");
+const keyboardKeys = document.querySelector("#keyboardKeys");
+const keyboardLabel = document.querySelector("#keyboardLabel");
+const keyboardDone = document.querySelector("#keyboardDone");
+
+const successScene = document.querySelector("#successScene");
+const successCardSlot = document.querySelector("#successCardSlot");
+const resetDemo = document.querySelector("#resetDemo");
+
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 const onlyDigits = value => value.replace(/\D/g, "");
+const demoInputs = [nameInput, numberInput, expiryInput, cvvInput];
+
+let activeInput = null;
 
 function formatCardNumber(value) {
   return onlyDigits(value).slice(0, 16).replace(/(.{4})/g, "$1 ").trim();
@@ -43,50 +56,153 @@ function syncPreview() {
   brandPreview.textContent = detectBrand(numberInput.value);
 }
 
-numberInput.addEventListener("input", event => {
-  event.target.value = formatCardNumber(event.target.value);
+function setInputValue(input, value) {
+  input.value = value;
   syncPreview();
-});
+  input.dispatchEvent(new Event("change", { bubbles: true }));
+}
 
-expiryInput.addEventListener("input", event => {
-  let value = formatExpiry(event.target.value);
+function keyboardTitle(input) {
+  const kind = input.dataset.keyboard;
+  if (kind === "name") return "Cardholder name";
+  if (kind === "number") return "Card number";
+  if (kind === "expiry") return "Expiry date";
+  return "Security code";
+}
 
-  if (value.length >= 2) {
-    const month = Number(value.slice(0, 2));
-    if (month > 12) value = "12" + value.slice(2);
-    if (month === 0 && value.length >= 2) value = "01" + value.slice(2);
+function makeKey(label, value = label, classes = "") {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = ("key " + classes).trim();
+  button.textContent = label;
+  button.dataset.value = value;
+  return button;
+}
+
+function renderKeyboard(input) {
+  keyboardKeys.innerHTML = "";
+  const kind = input.dataset.keyboard;
+
+  if (kind === "name") {
+    "QWERTYUIOPASDFGHJKLZXCVBNM".split("").forEach(letter => {
+      keyboardKeys.appendChild(makeKey(letter, letter));
+    });
+    keyboardKeys.appendChild(makeKey("space", " ", "space action"));
+    keyboardKeys.appendChild(makeKey("⌫", "__backspace", "wide action"));
+    return;
   }
 
-  event.target.value = value;
-  syncPreview();
-});
-
-cvvInput.addEventListener("input", event => {
-  event.target.value = onlyDigits(event.target.value).slice(0, 4);
-  syncPreview();
-});
-
-nameInput.addEventListener("input", syncPreview);
-
-/* Reference-video interaction:
-   CVV focus rotates the card to its back, other fields bring it to the front. */
-cvvInput.addEventListener("focus", () => {
-  card.style.transform = "";
-  cardStage.classList.add("cvv-focus");
-});
-
-cvvInput.addEventListener("blur", () => {
-  cardStage.classList.remove("cvv-focus");
-});
-
-[nameInput, numberInput, expiryInput].forEach(input => {
-  input.addEventListener("focus", () => {
-    cardStage.classList.remove("cvv-focus");
+  ["1","2","3","4","5","6","7","8","9"].forEach(number => {
+    keyboardKeys.appendChild(makeKey(number, number, "numeric"));
   });
+  keyboardKeys.appendChild(makeKey("⌫", "__backspace", "numeric action"));
+  keyboardKeys.appendChild(makeKey("0", "0", "numeric"));
+  keyboardKeys.appendChild(makeKey("Next", "__next", "numeric action"));
+}
+
+function openKeyboard(input) {
+  activeInput = input;
+  keyboardLabel.textContent = keyboardTitle(input);
+  renderKeyboard(input);
+  keyboard.classList.add("visible");
+  keyboard.setAttribute("aria-hidden", "false");
+  document.body.classList.add("keyboard-open");
+
+  if (input === cvvInput) {
+    card.style.transform = "";
+    cardStage.classList.add("cvv-focus");
+  } else {
+    cardStage.classList.remove("cvv-focus");
+  }
+}
+
+function closeKeyboard() {
+  keyboard.classList.remove("visible");
+  keyboard.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("keyboard-open");
+  if (activeInput) activeInput.blur();
+  activeInput = null;
+  cardStage.classList.remove("cvv-focus");
+}
+
+function moveToNextInput() {
+  if (!activeInput) return;
+  const index = demoInputs.indexOf(activeInput);
+  if (index >= 0 && index < demoInputs.length - 1) {
+    const next = demoInputs[index + 1];
+    next.focus({ preventScroll: true });
+    openKeyboard(next);
+  } else {
+    closeKeyboard();
+  }
+}
+
+function applyDemoKey(value) {
+  if (!activeInput) return;
+  const kind = activeInput.dataset.keyboard;
+
+  if (value === "__next") {
+    moveToNextInput();
+    return;
+  }
+
+  if (value === "__backspace") {
+    if (kind === "number") {
+      const digits = onlyDigits(activeInput.value).slice(0, -1);
+      setInputValue(activeInput, formatCardNumber(digits));
+    } else if (kind === "expiry") {
+      const digits = onlyDigits(activeInput.value).slice(0, -1);
+      setInputValue(activeInput, formatExpiry(digits));
+    } else {
+      setInputValue(activeInput, activeInput.value.slice(0, -1));
+    }
+    return;
+  }
+
+  if (kind === "name") {
+    if (activeInput.value.length < 28) setInputValue(activeInput, activeInput.value + value);
+    return;
+  }
+
+  if (kind === "number") {
+    const digits = (onlyDigits(activeInput.value) + value).slice(0, 16);
+    setInputValue(activeInput, formatCardNumber(digits));
+    if (digits.length === 16) window.setTimeout(moveToNextInput, 150);
+    return;
+  }
+
+  if (kind === "expiry") {
+    let digits = (onlyDigits(activeInput.value) + value).slice(0, 4);
+    if (digits.length >= 2) {
+      let month = Number(digits.slice(0, 2));
+      if (month > 12) digits = "12" + digits.slice(2);
+      if (month === 0) digits = "01" + digits.slice(2);
+    }
+    setInputValue(activeInput, formatExpiry(digits));
+    if (digits.length === 4) window.setTimeout(moveToNextInput, 150);
+    return;
+  }
+
+  if (kind === "cvv") {
+    const digits = (onlyDigits(activeInput.value) + value).slice(0, 4);
+    setInputValue(activeInput, digits);
+  }
+}
+
+keyboardKeys.addEventListener("click", event => {
+  const key = event.target.closest(".key");
+  if (!key) return;
+  applyDemoKey(key.dataset.value);
 });
 
-/* Smooth 3D tracking uses one requestAnimationFrame per paint instead of
-   writing styles directly on every pointer event. */
+keyboardDone.addEventListener("click", closeKeyboard);
+
+demoInputs.forEach(input => {
+  input.addEventListener("focus", () => openKeyboard(input));
+  input.addEventListener("click", () => openKeyboard(input));
+});
+
+/* Smooth 3D card tracking on pointer devices. */
 let targetX = 0;
 let targetY = 0;
 let currentX = 0;
@@ -156,65 +272,56 @@ cardStage.addEventListener("pointerleave", resetCardTilt);
 cardStage.addEventListener("pointerup", resetCardTilt);
 cardStage.addEventListener("pointercancel", resetCardTilt);
 
-function setInvalid(input, invalid) {
-  input.classList.toggle("invalid", invalid);
-  input.setAttribute("aria-invalid", invalid ? "true" : "false");
+function buildSuccessCard() {
+  successCardSlot.innerHTML = "";
+  const clone = card.cloneNode(true);
+  clone.removeAttribute("id");
+  clone.querySelectorAll("[id]").forEach(node => node.removeAttribute("id"));
+  clone.classList.add("success-card-clone");
+  clone.style.transform = "";
+  successCardSlot.appendChild(clone);
 }
 
-function validate() {
-  const cardDigits = onlyDigits(numberInput.value);
-  const [monthText, yearText] = expiryInput.value.split("/");
-  const month = Number(monthText);
-  const year = Number(yearText);
-  const now = new Date();
-  const currentYY = now.getFullYear() % 100;
-
-  const expiryOk =
-    /^\d{2}\/\d{2}$/.test(expiryInput.value) &&
-    month >= 1 &&
-    month <= 12 &&
-    (year > currentYY || (year === currentYY && month >= now.getMonth() + 1));
-
-  const states = {
-    name: nameInput.value.trim().length >= 2,
-    number: /^\d{16}$/.test(cardDigits),
-    expiry: expiryOk,
-    cvv: /^\d{3,4}$/.test(cvvInput.value)
-  };
-
-  setInvalid(nameInput, !states.name);
-  setInvalid(numberInput, !states.number);
-  setInvalid(expiryInput, !states.expiry);
-  setInvalid(cvvInput, !states.cvv);
-
-  return Object.values(states).every(Boolean);
+function showSuccess() {
+  buildSuccessCard();
+  successScene.classList.add("show");
+  successScene.setAttribute("aria-hidden", "false");
+  document.body.classList.add("success-active");
 }
 
 form.addEventListener("submit", event => {
   event.preventDefault();
+
+  closeKeyboard();
   status.className = "form-status";
-
-  if (!validate()) {
-    status.textContent = "Please check the highlighted fields.";
-    status.classList.add("error");
-
-    const firstInvalid = form.querySelector(".invalid");
-    if (firstInvalid) firstInvalid.focus();
-    return;
-  }
-
-  payButton.classList.add("loading");
+  status.textContent = "Processing demo…";
   payButton.disabled = true;
-  payButton.querySelector(".pay-copy").textContent = "Processing demo…";
-  status.textContent = "No payment is being sent. This is a UI demo.";
+  payButton.classList.add("loading");
+  payButton.querySelector(".pay-copy").textContent = "Processing…";
 
   window.setTimeout(() => {
     payButton.classList.remove("loading");
-    payButton.disabled = false;
-    payButton.querySelector(".pay-copy").textContent = "Pay $1,248.00";
-    status.textContent = "Demo complete — ready to connect to a real payment provider later.";
+    payButton.classList.add("success");
+    payButton.querySelector(".pay-copy").textContent = "Paid ✓";
+    status.textContent = "Demo approved — no real payment was sent.";
     status.classList.add("success");
-  }, 1100);
+    showSuccess();
+  }, reduceMotion ? 150 : 720);
+});
+
+resetDemo.addEventListener("click", () => {
+  successScene.classList.remove("show");
+  successScene.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("success-active");
+  payButton.disabled = false;
+  payButton.classList.remove("success");
+  payButton.querySelector(".pay-copy").textContent = "Pay $1,248.00";
+  status.textContent = "";
+  successCardSlot.innerHTML = "";
+
+  if (window.innerWidth <= 760 && checkoutGrid) {
+    checkoutGrid.scrollTo({ left: checkoutGrid.clientWidth, behavior: reduceMotion ? "auto" : "smooth" });
+  }
 });
 
 syncPreview();
