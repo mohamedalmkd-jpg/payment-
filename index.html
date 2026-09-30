@@ -88,6 +88,11 @@
       </aside>
 
       <section class="payment-panel">
+        <div class="mobile-live-preview" id="mobileLivePreview" aria-label="Live card preview while typing">
+          <span class="live-preview-label"><i></i> LIVE CARD PREVIEW</span>
+          <div class="mobile-card-stage" id="mobileCardStage"></div>
+        </div>
+
         <div class="heading">
           <span class="eyebrow">PAYMENT METHOD</span>
           <h1>Payment details</h1>
@@ -97,13 +102,13 @@
         <form id="paymentForm" novalidate>
           <label class="field">
             <span>Cardholder name</span>
-            <input id="cardName" name="cardName" autocomplete="cc-name" maxlength="28" placeholder="Type your name" data-keyboard="name" inputmode="none" readonly />
+            <input id="cardName" name="cardName" autocomplete="off" maxlength="28" placeholder="Type your name" data-keyboard="name" inputmode="none" readonly aria-haspopup="dialog" />
           </label>
 
           <label class="field">
             <span>Card number</span>
             <div class="input-with-badge">
-              <input id="cardNumber" name="cardNumber" inputmode="numeric" autocomplete="cc-number" maxlength="19" placeholder="4242 4242 4242 4242" data-keyboard="number" inputmode="none" readonly />
+              <input id="cardNumber" name="cardNumber" autocomplete="off" maxlength="19" placeholder="4242 4242 4242 4242" data-keyboard="number" inputmode="none" readonly aria-haspopup="dialog" />
               <b id="cardBrand">VISA</b>
             </div>
           </label>
@@ -111,11 +116,11 @@
           <div class="field-row">
             <label class="field">
               <span>Expiry date</span>
-              <input id="cardExpiry" name="cardExpiry" inputmode="numeric" autocomplete="cc-exp" maxlength="5" placeholder="MM/YY" data-keyboard="expiry" inputmode="none" readonly />
+              <input id="cardExpiry" name="cardExpiry" autocomplete="off" maxlength="5" placeholder="MM/YY" data-keyboard="expiry" inputmode="none" readonly aria-haspopup="dialog" />
             </label>
             <label class="field">
               <span>CVV</span>
-              <input id="cardCvv" name="cardCvv" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="123" data-keyboard="cvv" inputmode="none" readonly />
+              <input id="cardCvv" name="cardCvv" autocomplete="off" maxlength="4" placeholder="123" data-keyboard="cvv" inputmode="none" readonly aria-haspopup="dialog" />
             </label>
           </div>
 
