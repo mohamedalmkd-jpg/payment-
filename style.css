@@ -1186,3 +1186,168 @@ body.success-active{
     width:min(330px,86vw);
   }
 }
+
+
+/* --- Reliable typing + always-visible mobile card preview --------------- */
+.field input.demo-active{
+  border-color:#648aff;
+  background:#fff;
+  box-shadow:0 0 0 4px rgba(57,104,255,.10),0 12px 28px rgba(57,104,255,.10);
+}
+
+.key{
+  touch-action:manipulation;
+  -webkit-user-select:none;
+  user-select:none;
+}
+
+.delete-key{
+  font-weight:900;
+}
+
+.mobile-live-preview{
+  display:none;
+}
+
+@media (max-width:760px){
+  .mobile-live-preview{
+    position:sticky;
+    top:64px;
+    z-index:45;
+    display:block;
+    margin:-18px -18px 18px;
+    padding:9px 18px 13px;
+    background:rgba(255,255,255,.90);
+    border-bottom:1px solid rgba(225,229,237,.92);
+    box-shadow:0 12px 28px rgba(30,43,77,.06);
+    backdrop-filter:blur(18px) saturate(1.12);
+    -webkit-backdrop-filter:blur(18px) saturate(1.12);
+  }
+
+  .live-preview-label{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    margin:0 0 6px;
+    color:#7b8596;
+    font-size:.47rem;
+    font-weight:900;
+    letter-spacing:.12em;
+  }
+
+  .live-preview-label i{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 0 4px rgba(31,181,108,.10);
+  }
+
+  .mobile-card-stage{
+    width:min(250px,70vw);
+    aspect-ratio:1.58/1;
+    margin:0 auto;
+    perspective:1400px;
+    transform-style:preserve-3d;
+  }
+
+  .mobile-payment-card{
+    width:100%;
+    height:100%;
+    position:relative;
+    transform-style:preserve-3d;
+    transition:transform .62s cubic-bezier(.18,.76,.2,1);
+    animation:none!important;
+  }
+
+  .mobile-card-stage.cvv-focus .mobile-payment-card{
+    transform:rotateY(180deg);
+  }
+
+  .mobile-live-preview .card-face{
+    border-radius:15px;
+  }
+
+  .mobile-live-preview .card-front{
+    padding:13px;
+  }
+
+  .mobile-live-preview .chip{
+    width:28px;
+    height:21px;
+    border-radius:6px;
+  }
+
+  .mobile-live-preview .tap{
+    margin-left:4px;
+    font-size:.64rem;
+  }
+
+  .mobile-live-preview .card-logo{
+    font-size:.46rem;
+  }
+
+  .mobile-live-preview .card-number{
+    margin:28px 0 21px;
+    font-size:.82rem;
+    letter-spacing:.08em;
+    white-space:nowrap;
+  }
+
+  .mobile-live-preview .card-label{
+    margin-bottom:3px;
+    font-size:.38rem;
+  }
+
+  .mobile-live-preview .card-bottom strong{
+    font-size:.52rem;
+  }
+
+  .mobile-live-preview .card-back{
+    padding:15px 0;
+  }
+
+  .mobile-live-preview .mag-strip{
+    height:30px;
+    margin:9px 0 14px;
+  }
+
+  .mobile-live-preview .signature-row{
+    min-height:29px;
+    margin:0 12px;
+    padding:0 7px;
+    font-size:.36rem;
+  }
+
+  .mobile-live-preview .signature-row strong{
+    font-size:.56rem;
+    padding:3px 5px;
+  }
+
+  .mobile-live-preview .back-copy{
+    margin:11px 12px;
+    font-size:.4rem;
+  }
+
+  .mobile-live-preview.typing{
+    box-shadow:0 16px 36px rgba(30,43,77,.10),0 0 0 1px rgba(57,104,255,.05);
+  }
+
+  .demo-keyboard{
+    z-index:120;
+  }
+
+  .keyboard-bar{
+    min-height:32px;
+  }
+
+  .keyboard-bar button{
+    min-height:32px;
+    touch-action:manipulation;
+  }
+
+  .key{
+    min-height:44px;
+  }
+}
