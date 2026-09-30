@@ -40,15 +40,15 @@
                 <span class="tap" aria-hidden="true">)))</span>
                 <span class="card-logo">PAY</span>
               </div>
-              <p class="card-number" id="cardNumberPreview">4242 4242 4242 4242</p>
+              <p class="card-number" id="cardNumberPreview">•••• •••• •••• ••••</p>
               <div class="card-bottom">
                 <div>
                   <span class="card-label">CARD HOLDER</span>
-                  <strong id="cardNamePreview">A. HASIB</strong>
+                  <strong id="cardNamePreview">YOUR NAME</strong>
                 </div>
                 <div class="expiry-box">
                   <span class="card-label">EXPIRES</span>
-                  <strong id="cardExpiryPreview">12/28</strong>
+                  <strong id="cardExpiryPreview">MM/YY</strong>
                 </div>
               </div>
             </div>
@@ -57,7 +57,7 @@
               <div class="mag-strip"></div>
               <div class="signature-row">
                 <span>AUTHORIZED SIGNATURE</span>
-                <strong id="cardCvvPreview">123</strong>
+                <strong id="cardCvvPreview">•••</strong>
               </div>
               <p class="back-copy">This card preview is for interface demonstration only.</p>
             </div>
@@ -91,19 +91,19 @@
         <div class="heading">
           <span class="eyebrow">PAYMENT METHOD</span>
           <h1>Payment details</h1>
-          <p>Enter your card details to preview the checkout animation.</p>
+          <p>Tap a field and use the animated demo keyboard. Any details work — this is a visual prototype only.</p>
         </div>
 
         <form id="paymentForm" novalidate>
           <label class="field">
             <span>Cardholder name</span>
-            <input id="cardName" name="cardName" autocomplete="cc-name" maxlength="28" placeholder="A. HASIB" value="A. HASIB" />
+            <input id="cardName" name="cardName" autocomplete="cc-name" maxlength="28" placeholder="Type your name" data-keyboard="name" inputmode="none" readonly />
           </label>
 
           <label class="field">
             <span>Card number</span>
             <div class="input-with-badge">
-              <input id="cardNumber" name="cardNumber" inputmode="numeric" autocomplete="cc-number" maxlength="19" placeholder="4242 4242 4242 4242" value="4242 4242 4242 4242" />
+              <input id="cardNumber" name="cardNumber" inputmode="numeric" autocomplete="cc-number" maxlength="19" placeholder="4242 4242 4242 4242" data-keyboard="number" inputmode="none" readonly />
               <b id="cardBrand">VISA</b>
             </div>
           </label>
@@ -111,11 +111,11 @@
           <div class="field-row">
             <label class="field">
               <span>Expiry date</span>
-              <input id="cardExpiry" name="cardExpiry" inputmode="numeric" autocomplete="cc-exp" maxlength="5" placeholder="MM/YY" value="12/28" />
+              <input id="cardExpiry" name="cardExpiry" inputmode="numeric" autocomplete="cc-exp" maxlength="5" placeholder="MM/YY" data-keyboard="expiry" inputmode="none" readonly />
             </label>
             <label class="field">
               <span>CVV</span>
-              <input id="cardCvv" name="cardCvv" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="123" value="123" />
+              <input id="cardCvv" name="cardCvv" inputmode="numeric" autocomplete="cc-csc" maxlength="4" placeholder="123" data-keyboard="cvv" inputmode="none" readonly />
             </label>
           </div>
 
@@ -142,9 +142,27 @@
             <span>✓ No demo data stored</span>
           </div>
         </form>
+        <div class="demo-keyboard" id="demoKeyboard" aria-hidden="true">
+          <div class="keyboard-bar">
+            <span id="keyboardLabel">Cardholder name</span>
+            <button type="button" id="keyboardDone">Done</button>
+          </div>
+          <div class="keyboard-keys" id="keyboardKeys"></div>
+        </div>
       </section>
     </section>
   </main>
+
+  <section class="success-scene" id="successScene" aria-hidden="true">
+    <div class="success-card-slot" id="successCardSlot"></div>
+    <div class="success-copy">
+      <div class="success-check" aria-hidden="true">✓</div>
+      <span class="success-kicker">PAYMENT COMPLETE</span>
+      <h2>Payment successful</h2>
+      <p>Demo transaction approved. No real payment was sent.</p>
+      <button type="button" class="reset-demo" id="resetDemo">Try again</button>
+    </div>
+  </section>
 
   <script src="./app.js"></script>
 </body>
