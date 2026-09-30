@@ -762,10 +762,14 @@ form{
   }
 }
 
-/* Keep the two-panel payment composition on desktop/tablet.
-   It only stacks on genuinely narrow phone widths. */
+/* Mobile stays a true two-page composition too.
+   Each panel fills the phone width and sits beside the other, so the user
+   swipes horizontally between the card/order page and the payment page. */
 @media (max-width:760px){
-  body{background:#f4f6fa}
+  body{
+    background:#f4f6fa;
+    overflow-x:hidden;
+  }
 
   .page-shell{
     width:100%;
@@ -773,6 +777,7 @@ form{
     border:0;
     border-radius:0;
     min-height:100vh;
+    overflow:hidden;
   }
 
   .checkout-header{
@@ -784,14 +789,34 @@ form{
   .progress{display:none}
 
   .checkout-grid{
-    grid-template-columns:1fr;
-    min-height:auto;
+    display:flex;
+    width:100%;
+    min-height:calc(100svh - 68px);
+    overflow-x:auto;
+    overflow-y:hidden;
+    scroll-snap-type:x mandatory;
+    scroll-behavior:smooth;
+    overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:none;
+  }
+
+  .checkout-grid::-webkit-scrollbar{display:none}
+
+  .summary-panel,
+  .payment-panel{
+    flex:0 0 100%;
+    width:100%;
+    min-width:100%;
+    min-height:calc(100svh - 68px);
+    scroll-snap-align:start;
+    scroll-snap-stop:always;
   }
 
   .summary-panel{
     padding:30px 20px 28px;
-    border-right:0;
-    border-bottom:1px solid var(--line);
+    border-right:1px solid var(--line);
+    border-bottom:0;
   }
 
   .card-stage{
@@ -807,7 +832,7 @@ form{
 }
 
 @media (max-width:420px){
-  .page-shell{overflow:visible}
+  .page-shell{overflow:hidden}
 
   .card-front{padding:19px}
 
