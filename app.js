@@ -1,5 +1,4 @@
 const form = document.querySelector("#paymentForm");
-const checkoutGrid = document.querySelector(".checkout-grid");
 const cardStage = document.querySelector("#cardStage");
 const card = document.querySelector("#paymentCard");
 const nameInput = document.querySelector("#cardName");
@@ -20,6 +19,9 @@ const keyboardKeys = document.querySelector("#keyboardKeys");
 const keyboardLabel = document.querySelector("#keyboardLabel");
 const keyboardDone = document.querySelector("#keyboardDone");
 
+const mobileLivePreview = document.querySelector("#mobileLivePreview");
+const mobileCardStage = document.querySelector("#mobileCardStage");
+
 const successScene = document.querySelector("#successScene");
 const successCardSlot = document.querySelector("#successCardSlot");
 const resetDemo = document.querySelector("#resetDemo");
@@ -29,6 +31,7 @@ const onlyDigits = value => value.replace(/\D/g, "");
 const demoInputs = [nameInput, numberInput, expiryInput, cvvInput];
 
 let activeInput = null;
+let mobileCard = null;
 
 function formatCardNumber(value) {
   return onlyDigits(value).slice(0, 16).replace(/(.{4})/g, "$1 ").trim();
@@ -48,18 +51,44 @@ function detectBrand(value) {
   return "CARD";
 }
 
+function buildMobileCard() {
+  if (!mobileCardStage || mobileCard) return;
+  mobileCard = card.cloneNode(true);
+  mobileCard.removeAttribute("id");
+  mobileCard.querySelectorAll("[id]").forEach(node => node.removeAttribute("id"));
+  mobileCard.classList.add("mobile-payment-card");
+  mobileCard.style.transform = "";
+  mobileCardStage.appendChild(mobileCard);
+}
+
+function updateCardNode(cardNode) {
+  if (!cardNode) return;
+  const numberNode = cardNode.querySelector(".card-number");
+  const nameNode = cardNode.querySelector(".card-bottom > div:first-child strong");
+  const expiryNode = cardNode.querySelector(".expiry-box strong");
+  const cvvNode = cardNode.querySelector(".signature-row strong");
+
+  if (numberNode) numberNode.textContent = numberInput.value || "•••• •••• •••• ••••";
+  if (nameNode) nameNode.textContent = (nameInput.value.trim() || "YOUR NAME").toUpperCase();
+  if (expiryNode) expiryNode.textContent = expiryInput.value || "MM/YY";
+  if (cvvNode) cvvNode.textContent = cvvInput.value || "•••";
+}
+
 function syncPreview() {
   namePreview.textContent = (nameInput.value.trim() || "YOUR NAME").toUpperCase();
   numberPreview.textContent = numberInput.value || "•••• •••• •••• ••••";
   expiryPreview.textContent = expiryInput.value || "MM/YY";
   cvvPreview.textContent = cvvInput.value || "•••";
   brandPreview.textContent = detectBrand(numberInput.value);
+  updateCardNode(mobileCard);
 }
 
 function setInputValue(input, value) {
   input.value = value;
+  input.classList.remove("invalid");
+  input.setAttribute("aria-invalid", "false");
   syncPreview();
-  input.dispatchEvent(new Event("change", { bubbles: true }));
+  input.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
 function keyboardTitle(input) {
@@ -76,6 +105,7 @@ function makeKey(label, value = label, classes = "") {
   button.className = ("key " + classes).trim();
   button.textContent = label;
   button.dataset.value = value;
+  button.setAttribute("aria-label", value === "__backspace" ? "Delete" : label);
   return button;
 }
 
@@ -87,53 +117,87 @@ function renderKeyboard(input) {
     "QWERTYUIOPASDFGHJKLZXCVBNM".split("").forEach(letter => {
       keyboardKeys.appendChild(makeKey(letter, letter));
     });
-    keyboardKeys.appendChild(makeKey("space", " ", "space action"));
-    keyboardKeys.appendChild(makeKey("⌫", "__backspace", "wide action"));
+    keyboardKeys.appendChild(makeKey("SPACE", " ", "space action"));
+    keyboardKeys.appendChild(makeKey("⌫ DELETE", "__backspace", "wide action delete-key"));
     return;
   }
 
   ["1","2","3","4","5","6","7","8","9"].forEach(number => {
     keyboardKeys.appendChild(makeKey(number, number, "numeric"));
   });
-  keyboardKeys.appendChild(makeKey("⌫", "__backspace", "numeric action"));
+  keyboardKeys.appendChild(makeKey("⌫", "__backspace", "numeric action delete-key"));
   keyboardKeys.appendChild(makeKey("0", "0", "numeric"));
-  keyboardKeys.appendChild(makeKey("Next", "__next", "numeric action"));
+  keyboardKeys.appendChild(makeKey("NEXT", "__next", "numeric action"));
+}
+
+function setFlipState(input) {
+  const flip = input === cvvInput;
+  card.style.transform = "";
+  cardStage.classList.toggle("cvv-focus", flip);
+  mobileCardStage?.classList.toggle("cvv-focus", flip);
+}
+
+function revealActiveInput(input) {
+  if (window.innerWidth > 760) return;
+  window.setTimeout(() => {
+    const rect = input.getBoundingClientRect();
+    const keyboardHeight = keyboard.getBoundingClientRect().height || 250;
+    const safeBottom = window.innerHeight - keyboardHeight - 18;
+    if (rect.bottom > safeBottom) {
+      window.scrollBy({
+        top: rect.bottom - safeBottom + 12,
+        behavior: reduceMotion ? "auto" : "smooth"
+      });
+    }
+  }, 80);
 }
 
 function openKeyboard(input) {
   activeInput = input;
+  demoInputs.forEach(field => field.classList.toggle("demo-active", field === input));
   keyboardLabel.textContent = keyboardTitle(input);
   renderKeyboard(input);
   keyboard.classList.add("visible");
   keyboard.setAttribute("aria-hidden", "false");
   document.body.classList.add("keyboard-open");
-
-  if (input === cvvInput) {
-    card.style.transform = "";
-    cardStage.classList.add("cvv-focus");
-  } else {
-    cardStage.classList.remove("cvv-focus");
-  }
+  mobileLivePreview?.classList.add("typing");
+  setFlipState(input);
+  revealActiveInput(input);
 }
 
 function closeKeyboard() {
   keyboard.classList.remove("visible");
   keyboard.setAttribute("aria-hidden", "true");
   document.body.classList.remove("keyboard-open");
-  if (activeInput) activeInput.blur();
+  mobileLivePreview?.classList.remove("typing");
+  demoInputs.forEach(field => field.classList.remove("demo-active"));
   activeInput = null;
   cardStage.classList.remove("cvv-focus");
+  mobileCardStage?.classList.remove("cvv-focus");
 }
 
 function moveToNextInput() {
   if (!activeInput) return;
   const index = demoInputs.indexOf(activeInput);
   if (index >= 0 && index < demoInputs.length - 1) {
-    const next = demoInputs[index + 1];
-    next.focus({ preventScroll: true });
-    openKeyboard(next);
+    openKeyboard(demoInputs[index + 1]);
   } else {
     closeKeyboard();
+  }
+}
+
+function deleteOne() {
+  if (!activeInput) return;
+  const kind = activeInput.dataset.keyboard;
+
+  if (kind === "number") {
+    const digits = onlyDigits(activeInput.value).slice(0, -1);
+    setInputValue(activeInput, formatCardNumber(digits));
+  } else if (kind === "expiry") {
+    const digits = onlyDigits(activeInput.value).slice(0, -1);
+    setInputValue(activeInput, formatExpiry(digits));
+  } else {
+    setInputValue(activeInput, Array.from(activeInput.value).slice(0, -1).join(""));
   }
 }
 
@@ -147,39 +211,31 @@ function applyDemoKey(value) {
   }
 
   if (value === "__backspace") {
-    if (kind === "number") {
-      const digits = onlyDigits(activeInput.value).slice(0, -1);
-      setInputValue(activeInput, formatCardNumber(digits));
-    } else if (kind === "expiry") {
-      const digits = onlyDigits(activeInput.value).slice(0, -1);
-      setInputValue(activeInput, formatExpiry(digits));
-    } else {
-      setInputValue(activeInput, activeInput.value.slice(0, -1));
-    }
+    deleteOne();
     return;
   }
 
   if (kind === "name") {
-    if (activeInput.value.length < 28) setInputValue(activeInput, activeInput.value + value);
+    if (activeInput.value.length < 28) {
+      setInputValue(activeInput, activeInput.value + value);
+    }
     return;
   }
 
   if (kind === "number") {
     const digits = (onlyDigits(activeInput.value) + value).slice(0, 16);
     setInputValue(activeInput, formatCardNumber(digits));
-    if (digits.length === 16) window.setTimeout(moveToNextInput, 150);
     return;
   }
 
   if (kind === "expiry") {
     let digits = (onlyDigits(activeInput.value) + value).slice(0, 4);
     if (digits.length >= 2) {
-      let month = Number(digits.slice(0, 2));
+      const month = Number(digits.slice(0, 2));
       if (month > 12) digits = "12" + digits.slice(2);
       if (month === 0) digits = "01" + digits.slice(2);
     }
     setInputValue(activeInput, formatExpiry(digits));
-    if (digits.length === 4) window.setTimeout(moveToNextInput, 150);
     return;
   }
 
@@ -189,17 +245,67 @@ function applyDemoKey(value) {
   }
 }
 
+/* Touch-first events make the custom keyboard reliable on iPhone.
+   preventDefault keeps readonly fields from handing control to the native keyboard. */
+demoInputs.forEach(input => {
+  input.addEventListener("pointerdown", event => {
+    event.preventDefault();
+    openKeyboard(input);
+  });
+  input.addEventListener("click", event => {
+    event.preventDefault();
+    openKeyboard(input);
+  });
+  input.addEventListener("focus", () => openKeyboard(input));
+});
+
+keyboardKeys.addEventListener("pointerdown", event => {
+  const key = event.target.closest(".key");
+  if (!key) return;
+  event.preventDefault();
+  applyDemoKey(key.dataset.value);
+});
+
 keyboardKeys.addEventListener("click", event => {
+  if (event.detail !== 0) return;
   const key = event.target.closest(".key");
   if (!key) return;
   applyDemoKey(key.dataset.value);
 });
 
-keyboardDone.addEventListener("click", closeKeyboard);
+keyboardDone.addEventListener("pointerdown", event => {
+  event.preventDefault();
+  closeKeyboard();
+});
+keyboardDone.addEventListener("click", event => {
+  if (event.detail !== 0) return;
+  closeKeyboard();
+});
 
-demoInputs.forEach(input => {
-  input.addEventListener("focus", () => openKeyboard(input));
-  input.addEventListener("click", () => openKeyboard(input));
+document.addEventListener("keydown", event => {
+  if (!activeInput) return;
+
+  if (event.key === "Backspace") {
+    event.preventDefault();
+    deleteOne();
+    return;
+  }
+
+  if (event.key === "Escape" || event.key === "Enter") {
+    event.preventDefault();
+    if (event.key === "Enter") moveToNextInput();
+    else closeKeyboard();
+    return;
+  }
+
+  const kind = activeInput.dataset.keyboard;
+  if (kind === "name" && /^[a-zA-Z ]$/.test(event.key)) {
+    event.preventDefault();
+    applyDemoKey(event.key.toUpperCase());
+  } else if (kind !== "name" && /^\d$/.test(event.key)) {
+    event.preventDefault();
+    applyDemoKey(event.key);
+  }
 });
 
 /* Smooth 3D card tracking on pointer devices. */
@@ -256,13 +362,11 @@ cardStage.addEventListener("pointermove", event => {
 
 function resetCardTilt() {
   if (cardStage.classList.contains("cvv-focus")) return;
-
   targetX = 0;
   targetY = 0;
   currentX = 0;
   currentY = 0;
   tracking = false;
-
   if (rafId) cancelAnimationFrame(rafId);
   rafId = 0;
   card.style.transform = "";
@@ -291,8 +395,8 @@ function showSuccess() {
 
 form.addEventListener("submit", event => {
   event.preventDefault();
-
   closeKeyboard();
+
   status.className = "form-status";
   status.textContent = "Processing demo…";
   payButton.disabled = true;
@@ -318,13 +422,7 @@ resetDemo.addEventListener("click", () => {
   payButton.querySelector(".pay-copy").textContent = "Pay $1,248.00";
   status.textContent = "";
   successCardSlot.innerHTML = "";
-
-  if (window.innerWidth <= 760) {
-    document.querySelector(".payment-panel")?.scrollIntoView({
-      behavior: reduceMotion ? "auto" : "smooth",
-      block: "start"
-    });
-  }
 });
 
+buildMobileCard();
 syncPreview();
