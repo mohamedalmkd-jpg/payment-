@@ -822,3 +822,25 @@ form{display:grid;gap:17px}
     scroll-behavior:auto!important;
   }
 }
+
+/* Safari/iPhone 3D card flip fix — prevents mirrored text while rotating */
+.payment-card{
+  -webkit-transform-style:preserve-3d;
+  transform-style:preserve-3d;
+}
+
+.card-face,
+.card-face *{
+  -webkit-backface-visibility:hidden;
+  backface-visibility:hidden;
+}
+
+.card-front{
+  -webkit-transform:rotateY(0deg) translateZ(0);
+  transform:rotateY(0deg) translateZ(0);
+}
+
+.card-back{
+  -webkit-transform:rotateY(180deg) translateZ(2px);
+  transform:rotateY(180deg) translateZ(2px);
+}
