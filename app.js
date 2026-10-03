@@ -15,6 +15,7 @@ const ringValue = document.querySelector("#ringValue");
 const completionText = document.querySelector("#completionText");
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const finePointer = window.matchMedia("(hover:hover) and (pointer:fine)").matches;
 const circumference = 106.8;
 
 let rafId = 0;
@@ -149,13 +150,13 @@ function resetTilt() {
 }
 
 cardStage.addEventListener("pointerenter", () => {
-  if (window.innerWidth <= 760 || reduceMotion || !motionToggle.checked) return;
+  if (!finePointer || window.innerWidth <= 760 || reduceMotion || !motionToggle.checked) return;
   tracking = true;
   requestTiltFrame();
 });
 
 cardStage.addEventListener("pointermove", event => {
-  if (window.innerWidth <= 760 || reduceMotion || !motionToggle.checked) return;
+  if (!finePointer || window.innerWidth <= 760 || reduceMotion || !motionToggle.checked) return;
   const rect = cardStage.getBoundingClientRect();
   targetX = Math.max(-0.5, Math.min(0.5, (event.clientX - rect.left) / rect.width - 0.5));
   targetY = Math.max(-0.5, Math.min(0.5, (event.clientY - rect.top) / rect.height - 0.5));
@@ -180,6 +181,10 @@ document.addEventListener("keydown", event => {
 
 window.addEventListener("resize", () => {
   if (window.innerWidth <= 760) resetTilt();
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) resetTilt();
 });
 
 syncName();
