@@ -11,7 +11,7 @@
 }
 
 *{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:#0c0e13}
+html,body{margin:0;min-height:100%;background:#0c0e13;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{
   min-height:100vh;
   padding:18px;
@@ -644,13 +644,13 @@ form{display:grid;gap:17px}
   }
 
   .left-panel{
-    padding:42px 10px 24px;
+    padding:34px 8px 22px;
     border-right:1px solid #e2e7ef;
   }
 
   .card-stage{
     width:100%;
-    margin-bottom:15px;
+    margin-bottom:18px;
   }
 
   .card-face{
@@ -659,38 +659,38 @@ form{display:grid;gap:17px}
   }
 
   .card-front,
-  .success-card-inner{padding:10px}
+  .success-card-inner{padding:12px}
 
   .chip{
-    width:23px;
-    height:17px;
-    border-radius:4px;
+    width:27px;
+    height:20px;
+    border-radius:5px;
   }
   .contactless{
-    margin-left:3px;
-    font-size:.4rem;
+    margin-left:4px;
+    font-size:.48rem;
   }
-  .card-brand{font-size:.31rem}
-  .card-brand small{font-size:.2rem}
+  .card-brand{font-size:.38rem}
+  .card-brand small{font-size:.24rem}
 
   .card-number{
-    margin:22px 0 17px;
+    margin:24px 0 19px;
     color:#1f2937;
-    font-size:clamp(.56rem,2.75vw,.66rem);
+    font-size:clamp(.66rem,3.15vw,.76rem);
     font-weight:800;
-    letter-spacing:.025em;
+    letter-spacing:.015em;
     text-overflow:clip;
   }
 
-  .card-bottom{gap:9px}
-  .card-bottom span{font-size:.22rem}
+  .card-bottom{gap:10px}
+  .card-bottom span{font-size:.27rem}
   .card-bottom strong{
     color:#374151;
-    font-size:.36rem;
+    font-size:.43rem;
     font-weight:800;
-    letter-spacing:.035em;
+    letter-spacing:.025em;
   }
-  .card-bottom>b{font-size:.3rem}
+  .card-bottom>b{font-size:.36rem}
 
   .card-back{padding:9px 0}
   .mag-strip{
@@ -733,36 +733,38 @@ form{display:grid;gap:17px}
   .order-total strong{font-size:.5rem}
 
   .right-panel{
-    padding:19px 9px 18px;
+    padding:18px 10px 20px;
   }
-  .heading h1{font-size:.68rem}
+  .heading h1{font-size:.82rem}
   .heading p{
-    margin:3px 0 12px;
-    font-size:.31rem;
+    margin:4px 0 14px;
+    font-size:.38rem;
+    line-height:1.45;
   }
 
-  form{gap:9px}
+  form{gap:11px}
 
-  .field{gap:4px}
-  .field>span{font-size:.26rem}
-  .field>span small{font-size:.22rem;margin-left:2px}
+  .field{gap:5px}
+  .field>span{font-size:.31rem}
+  .field>span small{font-size:.26rem;margin-left:2px}
 
   .input-wrap>i{
-    left:7px;
-    font-size:.38rem;
+    left:8px;
+    font-size:.44rem;
   }
   .input-wrap input{
-    height:29px;
-    padding:0 30px 0 19px;
-    border-radius:6px;
-    font-size:.38rem;
+    height:44px;
+    padding:0 31px 0 22px;
+    border-radius:7px;
+    font-size:16px;
+    line-height:1;
   }
   .visa{
     right:7px;
-    font-size:.28rem;
+    font-size:.34rem;
   }
 
-  .field-row{gap:6px}
+  .field-row{gap:7px}
 
   .save-row{
     grid-template-columns:10px 1fr;
@@ -784,15 +786,15 @@ form{display:grid;gap:17px}
   .save-row small{font-size:.23rem;margin-top:1px}
 
   .pay-button{
-    min-height:31px;
-    grid-template-columns:14px 1fr 14px;
-    padding:0 8px;
-    border-radius:6px;
+    min-height:40px;
+    grid-template-columns:16px 1fr 16px;
+    padding:0 9px;
+    border-radius:7px;
     box-shadow:0 6px 14px rgba(53,108,238,.2);
   }
   .pay-button strong,
   .pay-button span,
-  .pay-button b{font-size:.36rem}
+  .pay-button b{font-size:.45rem}
 
   .security-note{
     gap:6px;
