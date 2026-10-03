@@ -675,13 +675,21 @@ form{display:grid;gap:17px}
 
   .card-number{
     margin:22px 0 17px;
-    font-size:clamp(.43rem,2.25vw,.58rem);
-    letter-spacing:.055em;
+    color:#1f2937;
+    font-size:clamp(.56rem,2.75vw,.66rem);
+    font-weight:800;
+    letter-spacing:.025em;
+    text-overflow:clip;
   }
 
   .card-bottom{gap:9px}
-  .card-bottom span{font-size:.2rem}
-  .card-bottom strong{font-size:.28rem}
+  .card-bottom span{font-size:.22rem}
+  .card-bottom strong{
+    color:#374151;
+    font-size:.36rem;
+    font-weight:800;
+    letter-spacing:.035em;
+  }
   .card-bottom>b{font-size:.3rem}
 
   .card-back{padding:9px 0}
