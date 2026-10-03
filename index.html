@@ -3,174 +3,167 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="theme-color" content="#eef2f8" />
-  <meta name="description" content="Payments Studio — interactive checkout UI demo using test data only" />
-  <title>Payments Studio — Checkout Demo</title>
+  <meta name="theme-color" content="#eef4ff" />
+  <title>Payment Method Animation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <div class="ambient ambient-a" aria-hidden="true"></div>
-  <div class="ambient ambient-b" aria-hidden="true"></div>
-
   <main class="page-shell">
-    <header class="checkout-header">
-      <a class="brand" href="#" aria-label="Payments Studio home">
-        <span class="brand-mark">P</span>
-        <span class="brand-copy"><strong>PAYMENTS</strong><small>studio demo</small></span>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Payments checkout">
+        <span class="brand-icon">◎</span>
+        <span><strong>PAYMENTS</strong> <b>CHECKOUT</b></span>
       </a>
 
-      <div class="progress" aria-label="Demo checkout progress">
-        <span class="step done"><i>✓</i>Bag</span>
-        <span class="line done"></span>
-        <span class="step done"><i>✓</i>Delivery</span>
-        <span class="line"></span>
-        <span class="step active"><i>3</i>Payment</span>
+      <div class="steps" aria-label="Checkout steps">
+        <span class="done"><i>✓</i>Your bag</span>
+        <em>—</em>
+        <span class="done"><i>✓</i>Delivery</span>
+        <em>—</em>
+        <span class="active"><i>3</i>Payment</span>
       </div>
-
-      <span class="demo-pill"><i></i> TEST DATA ONLY</span>
     </header>
 
-    <section class="checkout-grid">
-      <aside class="summary-panel">
-        <div class="panel-intro">
-          <span class="eyebrow light">LIVE SHOWCASE</span>
-          <h2>A checkout that feels alive.</h2>
-          <p>This prototype uses fixed fictional test data and never asks for real card information.</p>
-        </div>
-
-        <div class="card-wrap">
+    <section class="checkout-stage">
+      <section class="checkout-grid" id="checkoutGrid">
+        <aside class="left-panel">
           <div class="card-stage" id="cardStage">
             <div class="payment-card" id="paymentCard">
-              <div class="card-face">
-                <div class="card-topline">
-                  <span class="chip"></span>
-                  <span class="tap">)))</span>
-                  <span class="card-logo">PAY</span>
+              <div class="card-face card-front">
+                <div class="card-top">
+                  <span class="chip" aria-hidden="true"></span>
+                  <span class="contactless" aria-hidden="true">)))</span>
+                  <span class="card-brand">PAYMENTS<br><small>MEMBER</small></span>
                 </div>
-                <p class="card-number">DEMO •••• •••• 4242</p>
+
+                <div class="card-number" id="ibanPreview">DE00 0000 0000 0000 0000 00</div>
+
                 <div class="card-bottom">
-                  <div><span class="card-label">CARD HOLDER</span><strong id="cardNamePreview">DEMO USER</strong></div>
-                  <div class="expiry-box"><span class="card-label">MODE</span><strong>TEST</strong></div>
+                  <div>
+                    <span>CARDHOLDER</span>
+                    <strong id="namePreview">YOUR NAME</strong>
+                  </div>
+                  <div>
+                    <span>EXPIRES</span>
+                    <strong id="expiryPreview">••/••</strong>
+                  </div>
+                  <b>VISA</b>
                 </div>
+              </div>
+
+              <div class="card-face card-back">
+                <div class="mag-strip"></div>
+                <div class="signature">
+                  <span></span>
+                  <strong id="cvcPreview">•••</strong>
+                </div>
+                <p>Demo interface only. No payment data is transmitted or stored.</p>
+                <b>VISA</b>
               </div>
             </div>
           </div>
-          <div class="card-shadow"></div>
-        </div>
 
-        <div class="order-card">
-          <div class="merchant-row">
-            <div class="merchant-icon">P</div>
-            <div><span class="eyebrow">MERCHANT</span><strong>Payments Studio</strong></div>
-            <span class="verified">✓ Demo verified</span>
+          <div class="order-card">
+            <span class="order-kicker">YOUR ORDER</span>
+            <div class="order-row"><strong>Reserve membership</strong><b>$1,180.00</b></div>
+            <small>Annual · renews Aug 2027</small>
+            <div class="order-row muted"><span>Priority delivery</span><b>Included</b></div>
+            <div class="order-row muted"><span>Estimated tax</span><b>$68.00</b></div>
+            <div class="divider"></div>
+            <div class="order-total"><span>Total due today</span><strong>$1,248.00</strong></div>
           </div>
-          <div class="order-head">
-            <div><span class="eyebrow">ORDER</span><h3>Premium interface package</h3></div>
-            <strong>$1,248.00</strong>
-          </div>
-          <div class="order-lines">
-            <div><span>Priority delivery</span><strong>Included</strong></div>
-            <div><span>UI prototype tax</span><strong>$48.00</strong></div>
-          </div>
-          <div class="order-total"><span>Total demo amount</span><strong>$1,248.00</strong></div>
-        </div>
+        </aside>
 
-        <div class="privacy-note"><span>🔒</span><p><strong>Safe showcase.</strong> No real payment fields, no transmission, no storage.</p></div>
-      </aside>
-
-      <section class="payment-panel">
-        <div class="heading-row">
+        <section class="right-panel">
           <div class="heading">
-            <span class="eyebrow">INTERACTIVE DEMO</span>
-            <h1>Payment experience</h1>
-            <p>Customize the fictional card label, choose a demo speed, then run the payment animation.</p>
+            <h1>Payment details</h1>
+            <p>Enter your details to complete the transaction.</p>
           </div>
-          <div class="completion-ring">
-            <svg viewBox="0 0 42 42" aria-hidden="true"><circle class="ring-track" cx="21" cy="21" r="17"></circle><circle class="ring-value" id="ringValue" cx="21" cy="21" r="17"></circle></svg>
-            <span id="completionText">25%</span>
-          </div>
-        </div>
 
-        <div class="demo-form">
-          <label class="field">
-            <span>Demo cardholder label</span>
-            <div class="input-shell">
-              <input id="demoName" autocomplete="off" maxlength="22" placeholder="DEMO USER" aria-label="Demo cardholder label" />
-              <span class="field-icon">Aa</span>
+          <form id="paymentForm" autocomplete="off" novalidate>
+            <label class="field">
+              <span>CARDHOLDER NAME</span>
+              <div class="input-wrap">
+                <i>⌕</i>
+                <input id="cardName" type="text" maxlength="24" placeholder="A. HASIB" />
+              </div>
+            </label>
+
+            <label class="field">
+              <span>IBAN</span>
+              <div class="input-wrap">
+                <i>▣</i>
+                <input id="iban" type="text" maxlength="42" placeholder="DE00 0000 0000 0000 0000 00" autocapitalize="characters" spellcheck="false" />
+                <b class="visa">VISA</b>
+              </div>
+            </label>
+
+            <div class="field-row">
+              <label class="field">
+                <span>EXPIRY DATE</span>
+                <div class="input-wrap">
+                  <i>▢</i>
+                  <input id="expiry" type="text" inputmode="numeric" maxlength="5" placeholder="MM/YY" />
+                </div>
+              </label>
+
+              <label class="field">
+                <span>CVC <small>back of card</small></span>
+                <div class="input-wrap">
+                  <i>♙</i>
+                  <input id="cvc" type="text" inputmode="numeric" maxlength="3" placeholder="•••" />
+                </div>
+              </label>
             </div>
-          </label>
 
-          <div class="mock-field">
-            <span>Test payment token</span>
-            <div class="token-box"><strong>DEMO-4242</strong><span>Fixed test token</span><i>✓</i></div>
-          </div>
-
-          <div class="field-row">
-            <label class="field">
-              <span>Animation speed</span>
-              <select id="speedSelect">
-                <option value="calm">Calm</option>
-                <option value="smooth" selected>Smooth</option>
-                <option value="fast">Fast</option>
-              </select>
+            <label class="save-row">
+              <input type="checkbox" checked />
+              <span class="check"></span>
+              <span><strong>Save this card for next time</strong><small>Demo only — nothing is stored.</small></span>
             </label>
-            <label class="field">
-              <span>Theme</span>
-              <select id="themeSelect">
-                <option value="ice" selected>Ice blue</option>
-                <option value="violet">Violet</option>
-                <option value="mint">Mint</option>
-              </select>
-            </label>
+
+            <button class="pay-button" id="payButton" type="submit">
+              <span>⌕</span>
+              <strong>Pay $1,248.00</strong>
+              <b>→</b>
+            </button>
+
+            <div class="security-note">
+              <span>◉ Local demo</span>
+              <span>⌁ 256-bit style UI</span>
+            </div>
+          </form>
+        </section>
+      </section>
+
+      <section class="success-scene" id="successScene" aria-hidden="true">
+        <div class="success-card-wrap">
+          <div class="success-card" id="successCard">
+            <div class="success-card-inner">
+              <div class="card-top">
+                <span class="chip"></span>
+                <span class="contactless">)))</span>
+                <span class="card-brand">PAYMENTS<br><small>MEMBER</small></span>
+              </div>
+              <div class="card-number" id="successIban">DE00 0000 0000 0000 0000 00</div>
+              <div class="card-bottom">
+                <div><span>CARDHOLDER</span><strong id="successName">YOUR NAME</strong></div>
+                <div><span>EXPIRES</span><strong id="successExpiry">••/••</strong></div>
+                <b>VISA</b>
+              </div>
+            </div>
           </div>
-
-          <label class="save-card">
-            <input id="motionToggle" type="checkbox" checked />
-            <span class="check-ui"></span>
-            <span><strong>Enable premium motion</strong><small>3D tilt, light sweep and cinematic success scene.</small></span>
-          </label>
-
-          <button class="pay-button" id="payButton" type="button">
-            <span class="lock">◇</span>
-            <span class="pay-copy">Run demo payment</span>
-            <span class="pay-arrow">→</span>
-          </button>
-
-          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
-
-          <div class="security-row">
-            <span><i>✓</i> No card collection</span>
-            <span><i>✓</i> Local-only interaction</span>
-            <span><i>✓</i> Presentation ready</span>
-          </div>
+          <div class="success-check">✓</div>
+          <h2>Paid $1,248.00</h2>
+          <p>Demo payment completed successfully.</p>
+          <button type="button" id="resetButton">Try again</button>
         </div>
       </section>
     </section>
   </main>
-
-  <section class="success-scene" id="successScene" aria-hidden="true">
-    <div class="success-card-slot">
-      <div class="success-mini-card">
-        <span>PAYMENTS</span>
-        <strong>DEMO •••• 4242</strong>
-        <small id="successName">DEMO USER</small>
-      </div>
-    </div>
-    <div class="success-copy">
-      <div class="success-check">✓</div>
-      <span class="success-kicker">DEMO COMPLETE</span>
-      <h2>Payment animation successful</h2>
-      <p>No real transaction was created. This is a visual checkout prototype.</p>
-      <div class="success-meta">
-        <span><small>STATUS</small><strong>Approved demo</strong></span>
-        <span><small>AMOUNT</small><strong>$1,248.00</strong></span>
-      </div>
-      <button type="button" class="reset-demo" id="resetDemo">↻ Try again</button>
-    </div>
-  </section>
 
   <script src="./app.js"></script>
 </body>
