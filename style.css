@@ -40,8 +40,7 @@ button{cursor:pointer}
   position:fixed;
   z-index:-1;
   border-radius:50%;
-  filter:blur(70px);
-  opacity:.6;
+  opacity:.34;
   pointer-events:none;
 }
 .ambient-a{
@@ -49,14 +48,14 @@ button{cursor:pointer}
   height:340px;
   left:-110px;
   top:-90px;
-  background:rgba(82,112,255,.18);
+  background:radial-gradient(circle,rgba(82,112,255,.18),rgba(82,112,255,0) 70%);
 }
 .ambient-b{
   width:390px;
   height:390px;
   right:-120px;
   bottom:-130px;
-  background:rgba(45,205,152,.15);
+  background:radial-gradient(circle,rgba(45,205,152,.15),rgba(45,205,152,0) 70%);
 }
 
 .page-shell{
@@ -67,15 +66,13 @@ button{cursor:pointer}
   border:1px solid rgba(255,255,255,.86);
   border-radius:34px;
   background:rgba(255,255,255,.9);
-  box-shadow:var(--shadow);
-  backdrop-filter:blur(24px);
-  -webkit-backdrop-filter:blur(24px);
+  box-shadow:0 24px 64px rgba(33,45,76,.12);
   animation:shellIn .72s var(--ease) both;
 }
 
 @keyframes shellIn{
-  from{opacity:0;transform:translateY(18px) scale(.986);filter:blur(7px)}
-  to{opacity:1;transform:none;filter:none}
+  from{opacity:0;transform:translate3d(0,14px,0) scale(.99)}
+  to{opacity:1;transform:none}
 }
 
 .checkout-header{
@@ -232,8 +229,7 @@ button{cursor:pointer}
   left:-120px;
   bottom:-80px;
   border-radius:50%;
-  background:rgba(68,104,255,.08);
-  filter:blur(30px);
+  background:radial-gradient(circle,rgba(68,104,255,.09),rgba(68,104,255,0) 70%);
 }
 
 .panel-intro{
@@ -300,7 +296,7 @@ button{cursor:pointer}
     radial-gradient(circle at 82% 82%,rgba(82,130,255,.37),transparent 42%),
     linear-gradient(135deg,#fbfdff 0%,#e9f1ff 42%,#cbdcff 100%);
   box-shadow:
-    0 28px 58px rgba(52,76,124,.22),
+    0 18px 38px rgba(52,76,124,.17),
     inset 0 1px 0 rgba(255,255,255,.86);
 }
 .card-face::before{
@@ -392,8 +388,7 @@ button{cursor:pointer}
   bottom:-20px;
   height:28px;
   border-radius:50%;
-  background:rgba(43,65,107,.18);
-  filter:blur(17px);
+  background:radial-gradient(ellipse,rgba(43,65,107,.18),rgba(43,65,107,0) 72%);
   transform:scaleX(.92);
   transition:transform .3s var(--ease),opacity .3s ease;
 }
@@ -407,9 +402,7 @@ button{cursor:pointer}
   border:1px solid rgba(255,255,255,.85);
   border-radius:21px;
   background:rgba(255,255,255,.8);
-  box-shadow:0 20px 44px rgba(52,66,96,.09);
-  backdrop-filter:blur(18px);
-  -webkit-backdrop-filter:blur(18px);
+  box-shadow:0 14px 32px rgba(52,66,96,.08);
   animation:rise .72s .24s var(--ease) both;
 }
 @keyframes rise{
@@ -735,7 +728,7 @@ button{cursor:pointer}
   color:#fff;
   background:linear-gradient(135deg,#426cff,#3559e7 58%,#503ad9);
   box-shadow:0 16px 36px rgba(77,111,255,.3);
-  transition:transform .22s var(--ease),box-shadow .22s ease,filter .22s ease;
+  transition:transform .22s var(--ease),box-shadow .22s ease;
 }
 .pay-button::before{
   content:"";
@@ -748,13 +741,13 @@ button{cursor:pointer}
 }
 .pay-button:hover{
   transform:translateY(-2px) scale(1.002);
-  box-shadow:0 22px 46px rgba(77,111,255,.38);
+  box-shadow:0 16px 32px rgba(77,111,255,.32);
 }
 .pay-button:hover::before{transform:translateX(130%)}
 .pay-button:active{transform:scale(.99)}
 .pay-button:focus-visible{
   outline:0;
-  box-shadow:0 0 0 4px rgba(77,111,255,.15),0 22px 46px rgba(77,111,255,.34);
+  box-shadow:0 0 0 4px rgba(77,111,255,.15),0 14px 30px rgba(77,111,255,.28);
 }
 .pay-button.loading{cursor:wait;filter:saturate(.82)}
 .pay-button.success{
@@ -804,11 +797,9 @@ button{cursor:pointer}
   padding:28px;
   overflow:hidden;
   background:
-    radial-gradient(circle at 50% 30%,rgba(42,202,126,.2),transparent 24rem),
-    radial-gradient(circle at 50% 82%,rgba(77,111,255,.15),transparent 32rem),
-    rgba(245,248,252,.82);
-  backdrop-filter:blur(26px) saturate(1.12);
-  -webkit-backdrop-filter:blur(26px) saturate(1.12);
+    radial-gradient(circle at 50% 30%,rgba(42,202,126,.16),transparent 24rem),
+    radial-gradient(circle at 50% 82%,rgba(77,111,255,.12),transparent 32rem),
+    rgba(245,248,252,.96);
   opacity:0;
   visibility:hidden;
   pointer-events:none;
@@ -837,7 +828,7 @@ button{cursor:pointer}
     radial-gradient(circle at 18% 8%,rgba(255,255,255,.98),transparent 23%),
     radial-gradient(circle at 84% 82%,rgba(70,128,255,.34),transparent 42%),
     linear-gradient(135deg,#fbfdff,#e9f1ff 42%,#cadcff);
-  box-shadow:0 30px 65px rgba(42,69,121,.23);
+  box-shadow:0 20px 44px rgba(42,69,121,.18);
   transform-style:preserve-3d;
 }
 .success-mini-card span{
@@ -858,8 +849,8 @@ button{cursor:pointer}
   animation:cardVictory 1.2s var(--ease) both;
 }
 @keyframes cardVictory{
-  0%{opacity:0;transform:translate3d(0,90px,-220px) rotateX(22deg) rotateY(-120deg) scale(.5);filter:blur(8px)}
-  48%{opacity:1;transform:translate3d(0,-20px,45px) rotateX(-7deg) rotateY(380deg) scale(1.05);filter:none}
+  0%{opacity:0;transform:translate3d(0,70px,-160px) rotateX(18deg) rotateY(-100deg) scale(.58)}
+  48%{opacity:1;transform:translate3d(0,-14px,34px) rotateX(-6deg) rotateY(320deg) scale(1.03)}
   100%{transform:translate3d(0,0,0) rotateX(0) rotateY(720deg) scale(.9)}
 }
 .success-copy{
@@ -987,8 +978,7 @@ body.motion-off *::after{
     padding:0 15px;
     position:sticky;
     top:0;
-    backdrop-filter:blur(20px);
-    -webkit-backdrop-filter:blur(20px);
+    background:rgba(255,255,255,.98);
   }
   .progress{display:none}
   .demo-pill{font-size:.48rem;padding:7px 9px}
@@ -1059,5 +1049,106 @@ body.motion-off *::after{
     scroll-behavior:auto!important;
     animation:none!important;
     transition:none!important;
+  }
+}
+
+/* Performance pass: keep motion compositor-friendly and reduce Safari paint cost */
+.page-shell,
+.checkout-grid,
+.summary-panel,
+.payment-panel,
+.order-card,
+.card-wrap,
+.demo-form{
+  contain:layout paint;
+}
+
+.payment-card,
+.pay-button,
+.success-mini-card,
+.success-copy{
+  transform:translateZ(0);
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+
+@media (max-width:760px){
+  .ambient{display:none}
+
+  .page-shell,
+  .checkout-header,
+  .order-card,
+  .success-scene{
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+
+  .summary-panel::before,
+  .summary-panel::after,
+  .card-face::after,
+  .card-shadow{
+    display:none;
+  }
+
+  .card-wrap{perspective:none}
+
+  .payment-card{
+    transform-style:flat;
+    will-change:auto;
+    animation:mobileCardIn .42s var(--ease) both;
+  }
+
+  @keyframes mobileCardIn{
+    from{opacity:0;transform:translate3d(0,10px,0) scale(.985)}
+    to{opacity:1;transform:none}
+  }
+
+  .card-face{
+    box-shadow:0 12px 26px rgba(52,76,124,.14),inset 0 1px 0 rgba(255,255,255,.86);
+  }
+
+  .card-face::before{
+    animation:none;
+    transform:translateX(20%) rotate(10deg);
+    opacity:.28;
+  }
+
+  .order-card,
+  .token-box,
+  .field input,
+  .field select{
+    box-shadow:none;
+  }
+
+  .pay-button{
+    box-shadow:0 10px 22px rgba(77,111,255,.23);
+  }
+
+  .pay-button:hover{
+    transform:none;
+    box-shadow:0 10px 22px rgba(77,111,255,.23);
+  }
+
+  .success-card-slot{perspective:none}
+
+  .success-scene.show .success-mini-card{
+    animation:mobileSuccess .58s var(--ease) both;
+  }
+
+  @keyframes mobileSuccess{
+    from{opacity:0;transform:translate3d(0,22px,0) scale(.94)}
+    to{opacity:1;transform:none}
+  }
+
+  .success-mini-card{
+    transform-style:flat;
+    box-shadow:0 14px 30px rgba(42,69,121,.16);
+  }
+}
+
+@media (hover:none),(pointer:coarse){
+  .pay-button:hover,
+  .save-card:hover .check-ui{
+    transform:none;
   }
 }
